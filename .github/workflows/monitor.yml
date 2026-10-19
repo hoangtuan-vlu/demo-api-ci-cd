@@ -1,0 +1,24 @@
+name: Production Monitor
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Chạy mỗi 1 giờ
+  workflow_dispatch: # Cho phép chạy thủ công từ tab Actions trên GitHub
+
+jobs:
+  monitor-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cài đặt Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+
+      - name: Đăng nhập Postman
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+
+      - name: Chạy kịch bản Monitor/Collection từ Postman Cloud
+        run: |
+          postman collection run "59055566-93a3ebf3-68b1-422d-bc06-99a00323bbd6"
